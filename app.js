@@ -88,9 +88,9 @@ const CARS_DATABASE = [
     unlocked: false,
     img: 'gelik_g63.jpg',
     platePosition: {
-      left: '49%',
-      top: '49.5%',
-      width: '18%',
+      left: '67.2%',
+      top: '50.1%',
+      width: '18.2%',
       aspectRatio: '580 / 125',
       transform: 'translate(-50%, -50%)'
     }
@@ -103,11 +103,11 @@ const CARS_DATABASE = [
     unlocked: false,
     img: 'bmw_m5.jpg',
     platePosition: {
-      left: '63.2%',
-      top: '31.6%',
-      width: '10.5%',
+      left: '62.8%',
+      top: '33.4%',
+      width: '14.4%',
       aspectRatio: '580 / 125',
-      transform: 'translate(-50%, -50%) rotate(-1deg)'
+      transform: 'translate(-50%, -50%)'
     }
   },
   {
@@ -1762,4 +1762,5 @@ class NomeraGame {
 let game;
 window.addEventListener('DOMContentLoaded', () => {
   game = new NomeraGame();
+  window.game = game;
 });
