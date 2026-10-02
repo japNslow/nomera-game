@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ГОСНОМЕРА 3D — Симулятор МРЭО и Оценка Автомобильных Номеров РФ</title>
+  <meta name="description" content="Реалистичный симулятор выпадения и экспертной оценки российских госномеров по ГОСТ Р 50577-93. Блатные серии, аукционные цены, гараж культовых авто.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="gold_eagle_bolt.png" type="image/png">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand" onclick="location.reload()">
+        <div class="brand-badge">
+          <img src="gold_eagle_bolt.png" alt="Герб РФ">
+        </div>
+        <div>
+          <div class="brand-title">ГОСНОМЕРА <span>3D</span></div>
+          <div class="brand-subtitle">Симулятор МРЭО • Оценка и Аукцион РФ</div>
+        </div>
+      </div>
+
+      <!-- Player Stats -->
+      <div class="header-stats">
+        <div class="stat-pill balance">
+          <span>💰 Баланс:</span>
+          <span class="balance-amount" id="userBalance">50 000 ₽</span>
+          <button class="balance-add-btn" id="btnAddBalance" title="Получить субсидию +100 000 ₽">+</button>
+        </div>
+
+        <div class="stat-pill">
+          <span id="userRank" class="rank-pill">Пешеход</span>
+          <span class="rank-badge" id="userBadge">Новичок</span>
+        </div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="header-actions">
+        <button class="nav-btn" id="navGarageBtn">
+          <span>🚘</span> Гараж
+        </button>
+        <button class="nav-btn" id="navConstructorBtn">
+          <span>🔍</span> Оценить свой
+        </button>
+        <button class="nav-btn" id="navShopBtn">
+          <span>🏛️</span> Связи в ГАИ
+        </button>
+        <button class="nav-btn" id="navCustomBtn">
+          <span>⚙️</span> Рамка
+        </button>
+        <button class="icon-btn" id="btnMuteToggle" title="Звук">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-content">
+
+    <!-- View Mode Switcher -->
+    <div class="view-mode-bar">
+      <div class="view-tabs">
+        <button class="view-tab-btn active" id="tabViewStand">
+          <span>🌟</span> 3D Номер крупно
+        </button>
+        <button class="view-tab-btn" id="tabViewCar">
+          <span>🚘</span> На автомобиле
+        </button>
+      </div>
+
+      <div class="car-selector">
+        <label for="carSelectDropdown" style="font-size: 13px; color: var(--text-secondary); font-weight: 600;">Автомобиль:</label>
+        <select id="carSelectDropdown" class="car-select-dropdown"></select>
+      </div>
+    </div>
+
+    <!-- STAGE SHOWCASE -->
+    <section class="stage-container" id="stageContainer">
+      <div class="stage-glow" id="stageGlow"></div>
+
+      <!-- STANDALONE 3D PLATE VIEW (Matches reference photo) -->
+      <div id="standViewContainer">
+        <div class="plate-3d-wrapper" id="plateWrapper">
+          <div class="plate-outer-frame">
+            <div class="plate-surface">
+              <div class="plate-specular-shine"></div>
+              <div class="plate-embossed-border"></div>
+
+              <!-- Left bolt with gold eagle -->
+              <div class="plate-bolt left" id="boltLeft">
+                <img src="gold_eagle_bolt.png" alt="болт" class="bolt-cap-img">
+              </div>
+
+              <!-- Main Section: Letter + 3 Digits + 2 Letters -->
+              <div class="plate-main-section">
+                <span class="gost-char plate-letter-start" id="plateLetter1">А</span>
+                <span class="gost-char plate-main-digits" id="plateDigits">695</span>
+                <span class="gost-char plate-letters-end" id="plateLettersEnd">КА</span>
+              </div>
+
+              <!-- Black Divider line -->
+              <div class="plate-divider-line"></div>
+
+              <!-- Region Section: Code + RUS + Russian Tricolor Flag -->
+              <div class="plate-region-section">
+                <div class="plate-bolt right" id="boltRight">
+                  <img src="gold_eagle_bolt.png" alt="болт" class="bolt-cap-img">
+                </div>
+                <span class="gost-char plate-region-digits" id="plateRegionDigits">799</span>
+                <div class="plate-region-bottom">
+                  <span class="rus-text">RUS</span>
+                  <div class="rus-flag-box" id="rusFlagBox">
+                    <div class="flag-stripe white"></div>
+                    <div class="flag-stripe blue"></div>
+                    <div class="flag-stripe red"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom frame inscription (Customizable) -->
+            <div class="plate-frame-bottom" id="plateFrameBottom">
+              <span class="frame-dot">◆</span> • УПРАВЛЕНИЕ ДЕЛАМИ ПРЕЗИДЕНТА РФ • <span class="frame-dot">◆</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAR VIEW CONTAINER (Mounted on Real Vehicle) -->
+      <div class="car-view-container" id="carViewContainer">
+        <img src="mercedes_clean.jpg" alt="Автомобиль" class="car-bg-img" id="carBgImg">
+        
+        <!-- Plate mounted on vehicle -->
+        <div class="car-mounted-plate" id="carMountedPlate">
+          <div class="plate-outer-frame">
+            <div class="plate-surface">
+              <div class="plate-embossed-border"></div>
+              <div class="plate-bolt left">
+                <img src="gold_eagle_bolt.png" alt="болт" class="bolt-cap-img">
+              </div>
+              <div class="plate-main-section">
+                <span class="gost-char plate-letter-start" id="carPlateLetter1">А</span>
+                <span class="gost-char plate-main-digits" id="carPlateDigits">695</span>
+                <span class="gost-char plate-letters-end" id="carPlateLettersEnd">КА</span>
+              </div>
+              <div class="plate-divider-line"></div>
+              <div class="plate-region-section">
+                <div class="plate-bolt right">
+                  <img src="gold_eagle_bolt.png" alt="болт" class="bolt-cap-img">
+                </div>
+                <span class="gost-char plate-region-digits" id="carPlateRegionDigits">799</span>
+                <div class="plate-region-bottom">
+                  <span class="rus-text">RUS</span>
+                  <div class="rus-flag-box">
+                    <div class="flag-stripe white"></div>
+                    <div class="flag-stripe blue"></div>
+                    <div class="flag-stripe red"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROLL CONTROLS -->
+    <section class="controls-container">
+      <div class="buttons-row">
+        <button class="btn-primary-roll" id="btnRollSingle">
+          <span>🎲</span>
+          <span>ПОЛУЧИТЬ НОМЕР В ГИБДД</span>
+          <span class="btn-cost-tag">2 500 ₽</span>
+        </button>
+
+        <button class="btn-secondary-action" id="btnRollMulti">
+          <span>⚡</span> БЫСТРЫЙ ДРОП x5
+          <span class="btn-cost-tag" style="background: rgba(255,255,255,0.1);">12 500 ₽</span>
+        </button>
+
+        <button class="btn-secondary-action" id="btnAutoRoll">
+          <span>⚡</span> АВТО-КРУТКА ДО КУША
+        </button>
+      </div>
+    </section>
+
+    <!-- APPRAISAL CARD -->
+    <section class="appraisal-card" id="appraisalCard">
+      <div class="appraisal-header">
+        <div class="appraisal-title-group">
+          <div class="appraisal-stamp">★</div>
+          <div>
+            <div class="appraisal-heading">Экспертное заключение ценности</div>
+            <div class="appraisal-sub">Официальный реестр автономеров РФ • Анализ спроса на вторичном рынке</div>
+          </div>
+        </div>
+        <div class="rarity-badge-large" id="appraisalRarityBadge">
+          Легендарный
+        </div>
+      </div>
+
+      <!-- Price Box -->
+      <div class="appraisal-price-box">
+        <div>
+          <div class="price-label">Оценочная стоимость на закрытом аукционе:</div>
+          <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+            <span class="price-number" id="appraisalPrice">4 500 000</span>
+            <span class="price-currency">₽</span>
+          </div>
+        </div>
+        <div class="price-diff-badge" id="priceDiffBadge">
+          Высокая ликвидность
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="breakdown-grid">
+        <div class="breakdown-item">
+          <div class="breakdown-item-header">
+            <span>Буквенная серия</span>
+            <span>🔤</span>
+          </div>
+          <div class="breakdown-val" id="breakdownLettersVal">Обычная серия</div>
+          <div class="breakdown-bonus" id="breakdownLettersBonus">+0 ₽</div>
+        </div>
+
+        <div class="breakdown-item">
+          <div class="breakdown-item-header">
+            <span>Числовой код</span>
+            <span>🔢</span>
+          </div>
+          <div class="breakdown-val" id="breakdownDigitsVal">Одинаковые цифры</div>
+          <div class="breakdown-bonus" id="breakdownDigitsBonus">+1 500 000 ₽</div>
+        </div>
+
+        <div class="breakdown-item">
+          <div class="breakdown-item-header">
+            <span>Регион РФ</span>
+            <span>📍</span>
+          </div>
+          <div class="breakdown-val" id="breakdownRegionVal">г. Москва</div>
+          <div class="breakdown-bonus" id="breakdownRegionBonus">x2.8 коэф.</div>
+        </div>
+
+        <div class="breakdown-item" id="breakdownComboItem" style="display: none; border-color: rgba(245, 176, 65, 0.4);">
+          <div class="breakdown-item-header">
+            <span>Супер-комбо</span>
+            <span>💥</span>
+          </div>
+          <div class="breakdown-val" id="breakdownComboVal">Бинго</div>
+          <div class="breakdown-bonus" id="breakdownComboBonus">x2.0 БОНУС</div>
+        </div>
+      </div>
+
+      <!-- Historical Lore -->
+      <div class="lore-container">
+        <div class="lore-title">
+          <span>📜</span> ИСТОРИЧЕСКАЯ СПРАВКА И СТАТУС В ПОТОКЕ:
+        </div>
+        <div id="appraisalLore">
+          Культовые «Три топора» — самый узнаваемый и авторитетный номер на постсоветском пространстве. Символ безупречного фарта и достатка.
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="appraisal-actions">
+        <button class="btn-sell-now" id="btnSellPlate">
+          <span>💰</span> ПРОДАТЬ ПЕРЕКУПЩИКАМ ЗА +4 500 000 ₽
+        </button>
+        <button class="btn-save-garage" id="btnSavePlate">
+          <span>📥</span> В ГАРАЖ
+        </button>
+        <button class="btn-secondary-action" id="btnExportCard" style="margin-left: auto;">
+          <span>📸</span> СКАЧАТЬ СЕРТИФИКАТ (PNG)
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- 1. МОДАЛКА: ГАРАЖ И АВТОСАЛОН -->
+  <div class="modal-overlay" id="garageModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🚘</span> Мой Гараж и Автопарк
+        </div>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-nav-tabs">
+          <button class="modal-tab-btn active" id="tabGaragePlates">Сохранённые номера</button>
+          <button class="modal-tab-btn" id="tabGarageCars">Автосалон (Купить авто)</button>
+        </div>
+
+        <div class="inventory-grid" id="garagePlatesContent"></div>
+        <div class="inventory-grid" id="garageCarsContent" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. МОДАЛКА: СВЯЗИ В ГИБДД (МАГАЗИН УЛУЧШЕНИЙ) -->
+  <div class="modal-overlay" id="shopModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🏛️</span> Связи в МРЭО и ГИБДД
+        </div>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;">
+          Вкладывайте заработанные рубли в знакомства с начальством автоинспекции и получайте доступ к спецсериям из закрытых сейфов!
+        </div>
+        <div class="perks-list" id="perksListContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. МОДАЛКА: КАСТОМИЗАЦИЯ РАМКИ И БОЛТОВ -->
+  <div class="modal-overlay" id="customizerModal">
+    <div class="modal-window" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span> Тюнинг Рамки и Стиля Номера
+        </div>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="customizer-grid">
+          <div class="form-group">
+            <label class="form-label">Шаблон надписи на рамке:</label>
+            <select id="frameTextPreset" class="form-input">
+              <option value="• УПРАВЛЕНИЕ ДЕЛАМИ ПРЕЗИДЕНТА РФ •">• УПРАВЛЕНИЕ ДЕЛАМИ ПРЕЗИДЕНТА РФ •</option>
+              <option value="• ФЕДЕРАЛЬНАЯ СЛУЖБА БЕЗОПАСНОСТИ РОССИИ •">• ФЕДЕРАЛЬНАЯ СЛУЖБА БЕЗОПАСНОСТИ РОССИИ •</option>
+              <option value="• ГЛАВНОЕ УПРАВЛЕНИЕ МВД РОССИИ •">• ГЛАВНОЕ УПРАВЛЕНИЕ МВД РОССИИ •</option>
+              <option value="MERCEDES-BENZ CLUB RUSSIA">MERCEDES-BENZ CLUB RUSSIA</option>
+              <option value="///M PERFORMANCE • BMW MOTORSPORT">///M PERFORMANCE • BMW MOTORSPORT</option>
+              <option value="• ОПЕРУПОЛНОМОЧЕННЫЙ СТОЛИЧНОГО ГУУР •">• ОПЕРУПОЛНОМОЧЕННЫЙ СТОЛИЧНОГО ГУУР •</option>
+              <option value="РОССИЯ • ГОСАВТОИНСПЕКЦИЯ">РОССИЯ • ГОСАВТОИНСПЕКЦИЯ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Свой текст на рамке:</label>
+            <input type="text" id="frameTextInput" class="form-input" value="• УПРАВЛЕНИЕ ДЕЛАМИ ПРЕЗИДЕНТА РФ •" maxlength="45">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Болты крепления госномера:</label>
+            <div class="radio-pills">
+              <label class="radio-pill-btn active">
+                <input type="radio" name="boltType" value="gold" checked style="display: none;">
+                👑 Золотой Герб РФ (как на фото)
+              </label>
+              <label class="radio-pill-btn">
+                <input type="radio" name="boltType" value="chrome" style="display: none;">
+                ⚪ Хромированные болты
+              </label>
+              <label class="radio-pill-btn">
+                <input type="radio" name="boltType" value="black" style="display: none;">
+                ⚫ Черные скрытые заглушки
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Российский триколор:</label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; font-size: 13px;">
+              <input type="checkbox" id="flagToggleCheckbox" checked style="width: 18px; height: 18px;">
+              Отображать флаг РФ (без флага — редкий тренд)
+            </label>
+          </div>
+
+          <button class="btn-primary-roll" id="btnSaveCustomizer" style="width: 100%; justify-content: center; padding: 12px; margin-top: 8px;">
+            <span>💾</span> СОХРАНИТЬ НАСТРОЙКИ
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. МОДАЛКА: КОНСТРУКТОР И ОЦЕНКА СВОЕГО НОМЕРА -->
+  <div class="modal-overlay" id="constructorModal">
+    <div class="modal-window" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🔍</span> Конструктор и Экспертиза Своего Номера
+        </div>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: var(--text-secondary); text-align: center;">
+          Введите номер своего реального автомобиля или номер мечты, чтобы узнать его реальную рыночную стоимость и историческую ценность!
+        </div>
+
+        <div class="custom-plate-inputs">
+          <input type="text" id="customLet1" class="plate-input-box let1" maxlength="1" value="А">
+          <input type="text" id="customDigits" class="plate-input-box num" maxlength="3" value="777">
+          <input type="text" id="customLet2" class="plate-input-box let1" maxlength="1" value="А">
+          <input type="text" id="customLet3" class="plate-input-box let1" maxlength="1" value="А">
+          <input type="text" id="customReg" class="plate-input-box reg" maxlength="3" value="777">
+        </div>
+
+        <div style="text-align: center; font-size: 12px; color: var(--text-muted);">
+          Допустимы только 12 букв РФ: А, В, Е, К, М, Н, О, Р, С, Т, У, Х
+        </div>
+
+        <button class="btn-primary-roll" id="btnEvaluateCustom" style="width: 100%; justify-content: center; padding: 14px; margin-top: 10px;">
+          <span>⚖️</span> ПРОВЕСТИ НЕЗАВИСИМУЮ ЭКСПЕРТИЗУ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div>
+        <strong>ГОСНОМЕРА 3D</strong> • Официальный симулятор выпадения и оценки госномеров РФ по ГОСТ Р 50577-93
+      </div>
+      <div>
+        Разработано для GitHub Pages • Все цены и статусы являются игровой симуляцией
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
