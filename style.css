@@ -490,6 +490,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .plate-bolt.left {
@@ -533,11 +534,11 @@ body {
   flex: 1;
   height: 100%;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  padding-left: 28px;
-  padding-right: 10px;
-  gap: 4px;
+  padding-left: 36px;
+  padding-right: 12px;
+  gap: 8px;
   position: relative;
   z-index: 3;
 }
@@ -549,20 +550,20 @@ body {
   background-color: var(--plate-border);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   position: absolute;
-  right: 138px;
+  right: 165px;
   top: 5px;
   z-index: 4;
 }
 
 /* Region Section */
 .plate-region-section {
-  width: 138px;
+  width: 165px;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 8px 8px 8px;
+  padding: 8px 36px 8px 12px;
   position: relative;
   z-index: 3;
 }
@@ -584,31 +585,32 @@ body {
 
 /* Big digits in main section */
 .plate-main-digits {
-  font-size: 92px;
-  letter-spacing: -1px;
-  transform: translateY(-4px);
+  font-size: 70px;
+  letter-spacing: -0.5px;
+  transform: translateY(3px);
 }
 
-/* Letters in main section (~70% of number height) */
+/* Letters in main section */
 .plate-letter-start {
-  font-size: 64px;
+  font-size: 50px;
   margin-right: 2px;
-  transform: translateY(-8px);
+  transform: translateY(3px);
 }
 
 .plate-letters-end {
-  font-size: 64px;
+  font-size: 50px;
   letter-spacing: 0px;
   margin-left: 2px;
-  transform: translateY(-8px);
+  transform: translateY(3px);
 }
 
 /* Region numbers */
 .plate-region-digits {
-  font-size: 66px;
-  letter-spacing: -1px;
-  line-height: 0.9;
-  margin-top: 2px;
+  font-size: 48px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-top: 10px;
+  transform: translateY(2px);
 }
 
 /* Region Bottom: RUS + Russian Flag */
@@ -619,12 +621,12 @@ body {
   gap: 6px;
   width: 100%;
   margin-top: auto;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .rus-text {
   font-family: var(--font-plate);
-  font-size: 21px;
+  font-size: 17px;
   color: var(--plate-text);
   font-weight: bold;
   letter-spacing: 0.5px;
@@ -634,8 +636,8 @@ body {
 
 /* Russian Flag (White, Blue, Red) */
 .rus-flag-box {
-  width: 28px;
-  height: 17px;
+  width: 26px;
+  height: 16px;
   border: 1px solid #111;
   border-radius: 1px;
   display: flex;
